@@ -4,7 +4,7 @@ __version__ = "0.1.0"
 __author__ = "Dataset Generator"
 __email__ = "dev@example.com"
 
-from .pipeline.main import InclusionDatasetPipeline
 from .config.settings import Config
+from .pipeline.main import InclusionDatasetPipeline
 
 __all__ = ["InclusionDatasetPipeline", "Config"]
