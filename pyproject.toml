@@ -1,0 +1,101 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "inclusion-dataset"
+version = "0.1.0"
+description = "Distilabel pipeline for inclusive German language SFT dataset generation"
+authors = [{name = "Johann-Peter Hartmann", email = "johann-peter.hartmann@mayflower.de"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "distilabel==1.5.3",
+    "openai==1.83.0",
+    "datasets==3.6.0",
+    "transformers==4.52.4",
+    "torch==2.7.0",
+    "numpy==2.2.6",
+    "pandas==2.2.3",
+    "scikit-learn==1.6.1",
+    "nltk==3.9.1",
+    "spacy==3.8.7",
+    "tqdm==4.67.1",
+    "pydantic==2.11.5",
+    "rich==14.0.0",
+    "loguru==0.7.3",
+    "sentence-transformers==4.1.0",
+    "textstat==0.7.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.6",
+    "pytest-cov==6.0.0",
+    "pytest-mock==3.15.1",
+    "black==25.6.0",
+    "isort==5.14.0",
+    "flake8==7.3.1",
+    "mypy==1.14.8",
+    "pre-commit==4.2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/johannhartmann/inclusion-dataset"
+Repository = "https://github.com/johannhartmann/inclusion-dataset"
+Issues = "https://github.com/johannhartmann/inclusion-dataset/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  | \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["inclusion_dataset"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

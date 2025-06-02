@@ -1,0 +1,207 @@
+# Meta-Prompt: Distilabel Pipeline für inklusives Sprach-SFT-Dataset
+
+## Projektkontext
+Erstelle eine vollständige distilabel-Pipeline zur Generierung eines SFT-Datasets für deutsche Sprachmodelle (8-21B Parameter) mit Fokus auf inklusive Sprache.
+
+## Spezifikationen
+
+### Dataset-Anforderungen
+- **Umfang:** 20.000 Samples im Standard SFT-Format (instruction/input/output)
+- **Sprache:** Deutsch
+- **Aufgaben-Split:** 50% Transformations-Tasks, 50% Bewertungs-Tasks
+- **Textlänge:** 150-300 Wörter pro Input-Text (lange, komplexe Sätze)
+- **Inklusions-Scope:** Alle Aspekte (Gender, Behinderung, Ethnizität, Alter, sozioökonomisch)
+
+### Technische Parameter
+- **Teacher-Model:** GPT-4o (OpenAI)
+- **Framework:** distilabel
+- **Qualitätskontrolle:** LLM-as-a-Judge
+- **Budget:** Unbegrenzt
+- **Export:** JSONL für Hugging Face/Axolotl/Unsloth
+
+## Pipeline-Architektur
+
+### Schritt 1: Systematische Text-Generierung
+**KRITISCH: Echte strukturelle Vielfalt, nicht nur Prompt-Variation**
+
+**Konkrete Diversitäts-Mechanismen:**
+
+**A) Multi-dimensionale Content-Matrix (Zwangs-Kombination):**
+- **Vollständige Kreuzprodukt-Generierung:** 8×7×5×4×6 = 6.720 einzigartige Kontexte
+- **Systematisches Sampling:** Jede Kombination mindestens 1×, beliebte max. 3×
+- **Anti-Clustering:** Verhindere Häufung ähnlicher Kombinationen
+
+**B) Epochen-spezifische Sprachvariation:**
+- **1990er:** Explizit veraltete Terminologie, traditionelle Rollenmuster
+- **2000er:** Frühe PC-Versuche mit inkonsistenter Umsetzung  
+- **2010er:** Bewusstsein vorhanden, aber oberflächliche Ansätze
+- **Aktuell-problematisch:** Moderne Sprache mit subtilen, versteckten Biases
+
+**C) Domain-authentische Sprachregister:**
+- **Workplace:** HR-Jargon, Hierarchie-Sprache, Corporate-Speak
+- **Education:** Pädagogische Fachbegriffe, institutionelle Strukturen
+- **Healthcare:** Medizinische Terminologie, Patient-Provider-Dynamiken
+- **Media:** Journalistische Konventionen, Zielgruppen-Ansprache
+
+**D) Authentizitäts-Sicherung:**
+- **Vermeidung konstruierter Beispiele:** Texte müssen wie echte Kommunikation klingen
+- **Natürliche Bias-Integration:** Probleme entstehen durch typische Sprachverwendung
+- **Kontext-Plausibilität:** Jeder Text muss in seinem angegebenen Kontext realistisch sein
+
+**E) Messbare Diversitäts-Ziele:**
+- **Lexikalische Diversität:** TTR (Type-Token-Ratio) ≥ 0.4 über alle Texte
+- **Syntaktische Vielfalt:** 50+ verschiedene Satzstrukturen
+- **Semantische Abdeckung:** 25+ verschiedene Themenclusters
+- **Bias-Verteilung:** Gleichmäßige Verteilung über alle 6 Bias-Typen
+
+### Schritt 2: Kontextuelle Instruction-Erstellung
+**KRITISCH: VERMEIDE TEMPLATE-ANSÄTZE - Implementiere echte kontextuelle Ableitung**
+
+**Konkrete Anti-Template-Strategien:**
+
+**A) Dynamische Sprachanalyse:**
+- Extrahiere konkrete sprachliche Eigenschaften: Anredeformen, Fachvokabular, Satzkomplexität
+- Identifiziere Textgattung durch linguistische Marker, nicht durch Kategorisierung
+- Analysiere Bias-Signale: Welche spezifischen Wörter/Phrasen sind problematisch?
+
+**B) Kontextuelle Instruction-Ableitung (KEINE Templates):**
+- **Für Transformations-Tasks:** Instruction basiert auf identifizierten konkreten Problemen
+  - Beispiel: Text enthält "Krankenschwester" → Instruction fokussiert auf Berufsbezeichnungen
+  - Text ist HR-Kontext → Instruction spricht Diversity-Standards an
+  - Text hat Du-Form → Instruction bleibt bei Du
+
+**C) Mehrstufige Variationserzeugung:**
+1. **Basis-Instruction aus Textanalyse ableiten**
+2. **Linguistische Variation:** Synonyme, Satzstrukturen, Modalität ändern
+3. **Pragmatische Variation:** Begründungen, Zielgruppen-Fokus, Dringlichkeit anpassen
+4. **Stilistische Variation:** Register (wissenschaftlich/alltagssprachlich) anpassen
+
+**D) Konkrete Implementierungslogik:**
+```
+STATT: random.choice(["Wandle um:", "Überarbeite:", "Verbessere:"])
+SONDERN: 
+- Analysiere Text-Register → passe Instruction-Register an
+- Erkenne dominante Bias-Art → fokussiere Instruction darauf  
+- Bestimme Zielgruppe des Originaltexts → wähle passende Instruction-Perspektive
+```
+
+**E) Diversitätsmechanismen:**
+- **Lexikalische Vielfalt:** Mindestens 500 verschiedene Stammwörter in Instructions
+- **Syntaktische Vielfalt:** 20+ verschiedene Satzstrukturen für Instructions
+- **Pragmatische Vielfalt:** 15+ verschiedene Kommunikationsabsichten
+- **Stilistische Vielfalt:** 8+ verschiedene Register/Formalitätsgrade
+
+**Response-Generierung:**
+- Für Transformations-Tasks: Vollständige inklusive Umformulierung
+- Für Bewertungs-Tasks: Bewertung (1-10) + strukturierte Erklärung (Problem/Begründung/Vorschlag)
+- Kurze, präzise Erklärungen (max. 2-3 Sätze pro Punkt)
+
+### Schritt 3: Qualitätssicherung
+**Aufgabe:** LLM-as-a-Judge Validierung für Konsistenz und Qualität.
+
+**Bewertungskriterien:**
+- Instruction-Text-Passung: Passt die Aufgabenstellung zum Input-Text?
+- Response-Qualität: Ist die Antwort korrekt und hilfreich?
+- Konsistenz: Stimmen Bewertung und Erklärung überein?
+- Vollständigkeit: Wurden alle Inklusions-Aspekte berücksichtigt?
+
+**Filtering:**
+- Mindest-Qualitätsscore: 7/10
+- Längen-Validierung: Instructions 5-50 Wörter, Responses angemessen
+- Duplikat-Entfernung basierend auf Input-Text-Ähnlichkeit
+- Balance-Check über alle Kategorien
+
+## Implementierungsdetails
+
+### Pipeline-Konfiguration
+- Batch-Größe: 25-50 Samples für optimale API-Nutzung
+- Parallele Verarbeitung wo möglich
+- Retry-Logik für fehlgeschlagene API-Calls
+- Progress-Monitoring und Logging
+- Zwischenspeicherung für Crash-Recovery
+
+### Datenstruktur
+**Zwischenergebnis (mit Metadaten):**
+```json
+{
+  "instruction": "Generated instruction",
+  "input": "Original text", 
+  "output": "Model response",
+  "meta": {
+    "domain": "workplace",
+    "formality": "formal",
+    "bias_type": "gender",
+    "task_type": "transformation",
+    "quality_score": 8
+  }
+}
+```
+
+**Finales SFT-Format:**
+```json
+{
+  "instruction": "Generated instruction",
+  "input": "Original text",
+  "output": "Model response"
+}
+```
+
+### Export und Validierung
+- JSONL-Export für Standard-SFT-Tools
+- Train/Validation/Test Split: 80/10/10
+- Diversitäts-Metriken: Lexikalische Vielfalt, semantische Verteilung
+- Balance-Report über alle Kategorien
+- Sample-Inspektion für manuelle Qualitätsprüfung
+
+## Anti-Template-Validierung und Diversitäts-Enforcement
+
+### Diversitäts-Metriken (Zwingend zu implementieren):
+
+**A) N-Gram-Analyse der Instructions:**
+- Unigram-Diversität: >80% einzigartige Wörter
+- Bigram-Diversität: >90% einzigartige Wortpaare  
+- Trigram-Diversität: >95% einzigartige Dreiergruppen
+- **Automatic Reject:** Falls Template-Muster erkannt (>5% Überlappung)
+
+**B) Semantische Clustering-Analyse:**
+- Instructions in max. 20 semantische Cluster
+- Kein Cluster darf >8% aller Instructions enthalten
+- Minimum-Distanz zwischen ähnlichen Instructions: 0.3 (Cosine)
+
+**C) Syntaktische Struktur-Vielfalt:**
+- Mindestens 30 verschiedene Satzstrukturen-Patterns
+- Ausgewogene Verteilung von Frageformen, Imperativen, Aussagesätzen
+- Variation in Satzkomplexität (einfach/compound/komplex)
+
+**D) Pragmatische Funktions-Diversität:**
+Jede Instruction muss einer von 12+ Kommunikationsfunktionen zuordenbar sein:
+- Direktive Aufforderung, Höfliche Bitte, Experten-Beratung, Peer-Unterstützung
+- Qualitätskontrolle, Lernziel-Setting, Problem-Identifikation, Verbesserungs-Fokus
+- Zielgruppen-Adaptation, Standard-Alignment, Bewusstsein-Schärfung, Korrektur-Auftrag
+
+### Implementierungs-Kontrollen:
+
+**Zwangs-Diversifizierung:**
+- Pipeline muss Template-Detection eingebaut haben
+- Automatic Retry bei erkannten Templates
+- Diversitäts-Metriken als Akzeptanz-Kriterien
+- Real-time Monitoring der Variations-Rate
+
+**Konkrete Mess-Implementierung:**
+```python
+# Diese Funktionen MÜSSEN implementiert werden:
+def calculate_lexical_diversity(instructions):
+    # TTR, MTLD, Maas-Index berechnen
+    
+def detect_template_patterns(instructions):
+    # N-Gram Überlappung, Pattern-Matching
+    
+def measure_semantic_spread(instructions):
+    # Embedding-basierte Cluster-Analyse
+    
+def validate_pragmatic_functions(instructions):  
+    # Funktions-Klassifikation und Balance-Check
+```
+
+## Implementierungsauftrag
+Erstelle vollständigen, ausführbaren Python-Code mit distilabel, der diese Spezifikationen umsetzt. Code soll production-ready sein mit error handling, logging und dokumentation.
